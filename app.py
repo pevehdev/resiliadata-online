@@ -118,8 +118,11 @@ def updateFacilitadores(id):
         area = request.form['area']
         horario = request.form['horario']
         localizacao = request.form['localizacao']
-        data_contrato = request.form['data_contrato']
+        # Formatar a data de contrato para o formato correto (aaaa-mm-dd)
+        data_contrato = datetime.strptime(request.form['data_contrato'], '%d/%m/%Y').strftime('%Y-%m-%d')
         salario = request.form['salario']
+
+
 
         print(area)
         cursor.execute("""
@@ -358,7 +361,8 @@ def editEstudante(id):
 @app.route('/updateEstudante/<id>', methods=['POST'])
 def updateEstudante(id):
     if request.method == 'POST': 
-        data_matricula = request.form['data_matricula']
+         # Formatar a data de matrícula para o formato correto (aaaa-mm-dd)
+        data_matricula = datetime.strptime(request.form['data_matricula'], '%d/%m/%Y').strftime('%Y-%m-%d')
         numero_matricula = request.form['numero_matricula']
         status = request.form['status']
         
