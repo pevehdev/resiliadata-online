@@ -66,17 +66,17 @@
 <!-- Modal de Cadastro -->
 <div class="modal fade" id="modalCadastro" tabindex="-1" role="dialog" aria-labelledby="modalCadastroLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-lg d-flex justify-content-center align-items-center" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCadastroLabel">Cadastrar Novo Facilitador</h5>
+                <h5 class="modal-title" id="modalCadastroLabel">Cadastrar Novo Curso</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body justify-content-center">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <form action="{{url_for('addCursos')}}" method="POST">
                             <div class="form-group">
                                 <label for="nome_curso">Nome do Curso</label>
@@ -99,16 +99,17 @@
                                     placeholder="Módulos">
                             </div>
                     </div>
-                    
-                <div class="row justify-content-center">
-                    <div class="col-md-6 text-center">
-                        <button type="submit" class="btn btn-primary btn-block">Cadastrar Facilitador</button>
-                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary btn-block">Cadastrar Curso</button>
                 </div>
                 </form>
             </div>
         </div>
     </div>
+</div>
+
+
 </div>
 
 {% endblock %}

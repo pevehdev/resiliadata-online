@@ -69,7 +69,7 @@ def exibirFacilitadores():
     lista_facilitadores = cursor.fetchall()
     return render_template('facilitadores/facilitadores.html', lista_facilitadores = lista_facilitadores)
 
-@app.route('/add_facilitadores', methods = ['POST'] )
+@app.route('/add_facilitadores', methods=['POST'])
 def add_facilitadores():
     if request.method == 'POST':
         # Dados do formulário
@@ -77,32 +77,39 @@ def add_facilitadores():
         sobrenome = request.form['sobrenome']
         email = request.form['email']
         telefone = request.form['telefone']
-        data_nasc = request.form['data_nasc']
+        
+        # Formatar a data de nascimento para o formato correto (aaaa-mm-dd)
+        data_nasc = datetime.strptime(request.form['data_nasc'], '%d/%m/%Y').strftime('%Y-%m-%d')
+        
         genero = request.form['genero']
         area = request.form['area']
         horario = request.form['horario']
         localizacao = request.form['localizacao']
-        data_contrato = request.form['data_contrato']
+        
+        # Formatar a data de contrato para o formato correto (aaaa-mm-dd)
+        data_contrato = datetime.strptime(request.form['data_contrato'], '%d/%m/%Y').strftime('%Y-%m-%d')
+        
         salario = request.form['salario']
         rua = request.form['rua']
         cep = request.form['cep']
         cidade = request.form['cidade']
         bairro = request.form['bairro']
         pais = request.form['pais']
-        
+
         # Inserir dados de endereço
         cursor.execute("INSERT INTO Endereco (rua, cep, cidade, bairro, pais) VALUES (%s,%s,%s,%s,%s) RETURNING id", (rua, cep, cidade, bairro, pais))
         endereco_id = cursor.fetchone()[0]  # Obtém o ID do endereço inserido
         
         # Inserir dados de pessoa associando o ID do endereço
         cursor.execute("INSERT INTO Pessoa (endereco_id, nome, sobrenome, email, telefone, data_nasc, genero) VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id", (endereco_id, nome, sobrenome, email, telefone, data_nasc, genero))
-        Pessoa_id = cursor.fetchone()[0] # Obtém o ID do endereço inserido
+        pessoa_id = cursor.fetchone()[0] # Obtém o ID da pessoa inserida
 
-        cursor.execute("INSERT INTO Facilitadores(Pessoa_id, area, horario, localizacao, data_contrato, salario) VALUES (%s, %s, %s, %s, %s,%s)", (Pessoa_id,area, horario, localizacao,data_contrato, salario))
+        # Inserir dados do facilitador associando o ID da pessoa
+        cursor.execute("INSERT INTO Facilitadores (pessoa_id, area, horario, localizacao, data_contrato, salario) VALUES (%s, %s, %s, %s, %s, %s)", (pessoa_id, area, horario, localizacao, data_contrato, salario))
 
         db_connection.commit()
 
-        flash('Estudante cadastrado com sucesso!')
+        flash('Facilitador cadastrado com sucesso!')
         return redirect(url_for('exibirFacilitadores'))
     
 @app.route('/updateFacilitadores/<id>', methods=['POST'])
@@ -239,7 +246,7 @@ def addCursos():
         cursor.execute("INSERT INTO Cursos( nome_curso, descricao, duracao, modulos) VALUES (%s,%s,%s,%s) RETURNING id", (nome_curso, descricao, duracao, modulos))
         #Pessoa_id = cursor.fetchone()[0] # Obtém o ID do endereço inserido
         db_connection.commit()
-        flash('Estudante cadastrado com sucesso!')
+        flash('Curso cadastrado com sucesso!')
         return redirect(url_for('exibirCursos'))
     
 @app.route('/updateCursos/<id>', methods=['POST'])
@@ -280,7 +287,7 @@ def deleteCursos(id):
     # )
    
     db_connection.commit()
-    flash('Funcionario Deletado!')
+    flash('Curso Deletado!')
     return redirect(url_for('exibirCursos'))
 
 ###########ESTUDANTE###################
@@ -294,9 +301,15 @@ def add_estudante():
         sobrenome = request.form['sobrenome']
         email = request.form['email']
         telefone = request.form['telefone']
-        data_nasc = request.form['data_nasc']
+        
+        # Formatar a data de nascimento para o formato correto (aaaa-mm-dd)
+        data_nasc = datetime.strptime(request.form['data_nasc'], '%d/%m/%Y').strftime('%Y-%m-%d')
+        
         genero = request.form['genero']
-        data_matricula = request.form['data_matricula']
+        
+        # Formatar a data de matrícula para o formato correto (aaaa-mm-dd)
+        data_matricula = datetime.strptime(request.form['data_matricula'], '%d/%m/%Y').strftime('%Y-%m-%d')
+        
         numero_matricula = request.form['numero_matricula']
         status = request.form['status']
         rua = request.form['rua']
@@ -311,9 +324,10 @@ def add_estudante():
         
         # Inserir dados de pessoa associando o ID do endereço
         cursor.execute("INSERT INTO Pessoa (endereco_id, nome, sobrenome, email, telefone, data_nasc, genero) VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id", (endereco_id, nome, sobrenome, email, telefone, data_nasc, genero))
-        Pessoa_id = cursor.fetchone()[0] # Obtém o ID do endereço inserido
+        pessoa_id = cursor.fetchone()[0] # Obtém o ID da pessoa inserida
 
-        cursor.execute("INSERT INTO Estudantes(Pessoa_id, data_matricula, numero_matricula, status) VALUES (%s, %s, %s, %s)", (Pessoa_id,data_matricula,numero_matricula,status))
+        # Inserir dados do estudante associando o ID da pessoa
+        cursor.execute("INSERT INTO Estudantes (pessoa_id, data_matricula, numero_matricula, status) VALUES (%s, %s, %s, %s)", (pessoa_id, data_matricula, numero_matricula, status))
 
         db_connection.commit()
 
@@ -356,7 +370,7 @@ def updateEstudante(id):
         
         WHERE id = %s
         """, (data_matricula,numero_matricula, status, id))
-        flash('Estudante foi atualiza com sucesso!')
+        flash('Estudante foi atualizado com sucesso!')
         db_connection.commit()
         return redirect(url_for('exibirEstudantes'))
         
