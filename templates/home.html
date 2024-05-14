@@ -2,72 +2,53 @@
 {% block body %}
 
 <div class="container">
-    <h1 class="mt-4 mb-4">PAINEL DE CADASTRO</h1>
-    <div class="row">
-        
-   
+    <h1 class="mt-4 mb-4 text-center">PAINEL DE CADASTRO</h1>
+    <div class="row justify-content-center">
+        <!-- Cadastro de Facilitador -->
         <div class="col-md-3">
-            <div class="card">
-                <img src="{{ url_for('static', filename='facilitador.png') }}" alt="Imagem de Estudante" class="img-fluid"
-                    style="max-width: 180px;">
+            <div class="card text-center">
+                <img src="{{ url_for('static', filename='facilitador.png') }}" alt="Imagem de Facilitador"
+                    class="img-fluid" style="max-width: 180px;">
+                <div class="card-body">
                     <h5 class="card-title">Cadastro de Facilitador</h5>
                     <a href="/exibirFacilitadores" class="btn btn-primary">Cadastrar</a>
                 </div>
             </div>
         </div>
-        <!-- Repita este bloco de código para os outros tipos de cadastro -->
         <!-- Cadastro de Estudantes -->
         <div class="col-md-3">
-            <div class="card">
-                <img src="{{ url_for('static', filename='estudante.png') }}" alt="Imagem de Estudante" class="img-fluid"
-                    style="max-width: 200px;">
+            <div class="card text-center">
+                <img src="{{ url_for('static', filename='estudante.png') }}" alt="Imagem de Estudante"
+                    class="img-fluid" style="max-width: 180px;">
                 <div class="card-body">
                     <h5 class="card-title">Cadastro de Estudantes</h5>
                     <a href="/exibirEstudantes" class="btn btn-primary">Cadastrar</a>
                 </div>
             </div>
         </div>
-        
-        <!-- Cadastro de Turmas
+        <!-- Cadastro de Cursos -->
         <div class="col-md-3">
-            <div class="card">
-                <img src="caminho_para_imagem_turmas.jpg" class="card-img-top" alt="Cadastro de Turmas">
+            <div class="card text-center">
+                <img src="{{ url_for('static', filename='estudante.png') }}" alt="Imagem de Cursos"
+                    class="img-fluid" style="max-width: 180px;">
                 <div class="card-body">
-                    <h5 class="card-title">Criar Nova Turma</h5>
-                    <a href="#" class="btn btn-primary">Clique Aqui</a>
+                    <h5 class="card-title">Cadastro de Cursos</h5>
+                    <a href="/exibirCursos" class="btn btn-primary">Cadastrar</a>
                 </div>
             </div>
         </div>
-        Cadastro de Cursos 
+        <!-- Cadastro de Turmas -->
         <div class="col-md-3">
-            <div class="card">
-                <img src="caminho_para_imagem_cursos.jpg" class="card-img-top" alt="Cadastro de Cursos">
+            <div class="card text-center">
+                <img src="{{ url_for('static', filename='estudante.png') }}" alt="Imagem de Turmas"
+                    class="img-fluid" style="max-width: 180px;">
                 <div class="card-body">
-                    <h5 class="card-title">Cadastro Novo Curso</h5>
-                    <a href="#" class="btn btn-primary">Cadastrar</a>
+                    <h5 class="card-title">Cadastro de Turmas</h5>
+                    <a href="/exibirTurmas" class="btn btn-primary">Cadastrar</a>
                 </div>
             </div>
         </div>
-         Cadastro de Módulos 
-        <div class="col-md-3">
-            <div class="card">
-                <img src="caminho_para_imagem_modulos.jpg" class="card-img-top" alt="Cadastro de Módulos">
-                <div class="card-body">
-                    <h5 class="card-title">Criar Novo Módulo</h5>
-                    <a href="#" class="btn btn-primary">Clique Aqui</a>
-                </div>
-            </div>
-        </div>
-        Matricular Aluno 
-        <div class="col-md-3">
-            <div class="card">
-                <img src="caminho_para_imagem_matricula.jpg" class="card-img-top" alt="Cadastro de Matrícula">
-                <div class="card-body">
-                    <h5 class="card-title">Matricular Aluno</h5>
-                    <a href="#" class="btn btn-primary">Clique Aqui</a>
-                </div>
-            </div>
-        </div> -->
     </div>
 </div>
+
 {% endblock %}

@@ -22,6 +22,12 @@ CREATE_FACILITADORES_TABLE = (
 CREATE_ESTUDANTES_TABLE = (
     "CREATE TABLE IF NOT EXISTS estudantes (id SERIAL PRIMARY KEY, pessoa_id integer, data_matricula DATE, numero_matricula INTEGER, status smallint NOT NULL, FOREIGN KEY (pessoa_id)  REFERENCES pessoa(id));"
 )
+CREATE_CURSOS_TABLE = (
+    "CREATE TABLE IF NOT EXISTS Cursos (id SERIAL PRIMARY KEY, nome_curso TEXT, descricao TEXT, duracao TEXT, modulos TEXT);"
+)
+CREATE_TURMAS_TABLE = (
+    "CREATE TABLE IF NOT EXISTS Turmas (id SERIAL PRIMARY KEY, Cursos_id integer, Facilitadores_id integer, nome_turma TEXT, horario TEXT, localizacao TEXT, data_inicio DATE, data_termino DATE, FOREIGN KEY (Cursos_id)  REFERENCES Cursos(id), FOREIGN KEY (Facilitadores_id)  REFERENCES Facilitadores(id));"
+)
 
 load_dotenv()
 url = os.getenv("DATABASE_URL")
@@ -36,6 +42,8 @@ cursor.execute(CREATE_ENDERECO_TABLE)
 cursor.execute(CREATE_PESSOA_TABLE)
 cursor.execute(CREATE_ESTUDANTES_TABLE)
 cursor.execute(CREATE_FACILITADORES_TABLE)
+cursor.execute(CREATE_CURSOS_TABLE)
+cursor.execute(CREATE_TURMAS_TABLE)
 
 
 
@@ -53,8 +61,7 @@ def home():
 
     return render_template('home.html')
 
-
-###########FACILITADOR################
+###########CURSO#######################
 @app.route('/exibirFacilitadores')
 def exibirFacilitadores():
     sql = "SELECT * from facilitadores"
@@ -142,6 +149,139 @@ def deleteFacilitadores(id):
     db_connection.commit()
     flash('Funcionario Deletado!')
     return redirect(url_for('exibirFacilitadores'))
+###########FACILITADOR################
+#############TURMA###################
+@app.route('/exibirTurmas')
+def exibirTurmas():
+    sql = "SELECT * from Turmas"
+    cursor.execute(sql)
+    lista_turmas = cursor.fetchall()
+    return render_template('turmas/turmas.html', lista_turmas = lista_turmas)
+
+@app.route('/addTurmas', methods = ['POST'] )
+def addTurmas():
+    if request.method == 'POST':
+        # Dados do formulário
+        nome_turma = request.form['nome_turma']
+        horario = request.form['horario']
+        localizacao = request.form['localizacao']
+        data_inicio = request.form['data_inicio']
+        data_termino = request.form['data_termino']
+        # Inserir dados de pessoa associando o ID do endereço
+        cursor.execute("INSERT INTO Turmas ( nome_turma, horario, localizacao, data_inicio, data_termino) VALUES (%s,%s,%s,%s, %s) RETURNING id", (nome_turma, horario, localizacao, data_inicio, data_termino))
+        Cursos_id = cursor.fetchone()[0] # Obtém o ID do endereço inserido
+        db_connection.commit()
+        flash('Estudante cadastrado com sucesso!')
+        return redirect(url_for('exibirTurmas'))
+    
+@app.route('/updateTurmas/<id>', methods=['POST'])
+def updateTurmas(id):
+    if request.method == 'POST':
+        nome_turma = request.form['nome_turma']
+        horario = request.form['horario']
+        localizacao = request.form['localizacao']
+        data_inicio = request.form['data_inicio']
+        data_termino = request.form['data_termino']
+        
+                
+        cursor.execute("""
+        UPDATE Turmas
+        SET nome_turma = %s,
+            horario = %s,
+            localizacao = %s,
+            data_inicio = %s,
+            data_termino = %s
+            
+        WHERE id = %s
+        """, (nome_turma, horario, localizacao, data_inicio,data_termino, id))
+        flash('Turma foi atualizado com sucesso!')
+        db_connection.commit()
+        return redirect(url_for('exibirTurmas'))
+        
+@app.route('/editTurmas/<id>', methods = ['POST', 'GET'])
+def editTurmas(id):
+    cursor.execute('Select * FROM Turmas WHERE id = {0}'.format(id))
+    data = cursor.fetchall()
+    
+    return render_template('turmas/editTurmas.html', turmas = data[0] )
+
+@app.route('/deleteTurmas/<string:id>', methods = ['POST','GET'])
+def deleteTurmas(id):
+    cursor.execute(
+        'DELETE FROM Cursos Where id = {0}'.format(id)
+    )
+    cursor.execute(
+        'DELETE FROM Turmas Where id = {0}'.format(id)
+    )
+   
+    db_connection.commit()
+    flash('Turma Deletada!')
+    return redirect(url_for('exibirTurmas'))
+#############TURMA###################
+
+###############CURSOS#####################
+@app.route('/exibirCursos')
+def exibirCursos():
+    sql = "SELECT * from Cursos"
+    cursor.execute(sql)
+    lista_cursos = cursor.fetchall()
+    return render_template('cursos/cursos.html', lista_cursos = lista_cursos)
+
+@app.route('/addCursos', methods = ['POST'] )
+def addCursos():
+    if request.method == 'POST':
+        # Dados do formulário
+        nome_curso = request.form['nome_curso']
+        descricao = request.form['descricao']
+        duracao = request.form['duracao']
+        modulos = request.form['modulos']
+        # Inserir dados de pessoa associando o ID do endereço
+        cursor.execute("INSERT INTO Cursos( nome_curso, descricao, duracao, modulos) VALUES (%s,%s,%s,%s) RETURNING id", (nome_curso, descricao, duracao, modulos))
+        #Pessoa_id = cursor.fetchone()[0] # Obtém o ID do endereço inserido
+        db_connection.commit()
+        flash('Estudante cadastrado com sucesso!')
+        return redirect(url_for('exibirCursos'))
+    
+@app.route('/updateCursos/<id>', methods=['POST'])
+def updateCursos(id):
+    if request.method == 'POST':
+        nome_curso = request.form['nome_curso']
+        descricao = request.form['descricao']
+        duracao = request.form['duracao']
+        modulos = request.form['modulos']
+                
+        cursor.execute("""
+        UPDATE Cursos
+        SET nome_curso = %s,
+            descricao = %s,
+            duracao = %s,
+            modulos = %s
+            
+        WHERE id = %s
+        """, (nome_curso, descricao, duracao, modulos, id))
+        flash('Curso foi atualizado com sucesso!')
+        db_connection.commit()
+        return redirect(url_for('exibirCursos'))
+        
+@app.route('/editCursos/<id>', methods = ['POST', 'GET'])
+def editCursos(id):
+    cursor.execute('Select * FROM Cursos WHERE id = {0}'.format(id))
+    data = cursor.fetchall()
+    
+    return render_template('cursos/editCursos.html', cursos = data[0] )
+
+@app.route('/deleteCursos/<string:id>', methods = ['POST','GET'])
+def deleteCursos(id):
+    cursor.execute(
+        'DELETE FROM Cursos Where id = {0}'.format(id)
+    )
+    # cursor.execute(
+    #     'DELETE FROM Turma Where id = {0}'.format(id)
+    # )
+   
+    db_connection.commit()
+    flash('Funcionario Deletado!')
+    return redirect(url_for('exibirCursos'))
 
 ###########ESTUDANTE###################
 ### cADASTRAR ESTUDANTE ###
@@ -243,7 +383,7 @@ def deleteEstudantes(id):
 ### MOSTRAR DADOS NA TELA ###
 @app.route('/exibirPessoa')
 def Index():
-    cursor = conn.cursor(cursor_factory = psycopg2.extras.DictCursor)
+    
     sql = "SELECT * FROM Pessoa"
     cursor.execute(sql) #Executar a query do SQL
     lista_pessoa = cursor.fetchall()
